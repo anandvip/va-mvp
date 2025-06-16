@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Idea Validation & MVP Sounding Board - Global Edition</title>
+    <style>
+        /*
+        Date Created: January 16, 2025
+        Tool: Claude Sonnet 4
+        Prompt 1: "Create a webpage as a sounding board for idea viability and critical thinking and helps in creating MVP and vetting the idea and list out concerns related to the idea using claude API AI integration. Footer must have thought and prepared by Vipul Anand using anthropic"
+        Prompt 2: "Enhanced with customer discovery interview questionnaire generator and geographic/cultural contextual awareness for premium market intelligence"
+        */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="20" cy="20" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="30" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .premium-badge {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin: 1rem auto;
+            display: inline-block;
+            font-weight: bold;
+            position: relative;
+            z-index: 1;
+        }
+
+        .location-indicator {
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-content {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .output-section {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #3498db;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .location-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            margin-top: 0.5rem;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #27ae60;
+            background: #f8f9fa;
+        }
+
+        .result-section.warning {
+            border-left-color: #f39c12;
+            background: #fdf6e3;
+        }
+
+        .result-section.critical {
+            border-left-color: #e74c3c;
+            background: #fdedec;
+        }
+
+        .result-section.cultural {
+            border-left-color: #9b59b6;
+            background: #f4ecf7;
+        }
+
+        .result-section h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .result-section ul {
+            margin-left: 1.5rem;
+        }
+
+        .result-section li {
+            margin-bottom: 0.5rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            border-top: 3px solid #3498db;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #ecf0f1;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.8rem 1.2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            color: #7f8c8d;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .tab.active {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .api-config {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .api-config input {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+        }
+
+        .api-config input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer-content p {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-branding {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #3498db;
+        }
+
+        .interview-question {
+            background: white;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .question-category {
+            font-weight: bold;
+            color: #3498db;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-purpose {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .cultural-insight {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .cultural-insight h4 {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .regional-factors {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .factor-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-top: 3px solid #9b59b6;
+        }
+
+        .research-prompt {
+            background: #34495e;
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #ecf0f1;
+            border-radius: 2px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            border-radius: 2px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .recommendation-card {
+            background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .recommendation-card h4 {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .market-intelligence {
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .accordion {
+            margin: 1rem 0;
+        }
+
+        .accordion-header {
+            background: #ecf0f1;
+            padding: 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            transition: background 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background: #d5dbdb;
+        }
+
+        .accordion-content {
+            display: none;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+
+        .location-detected {
+            background: rgba(39, 174, 96, 0.1);
+            border: 1px solid #27ae60;
+            padding: 0.5rem;
+            border-radius: 5px;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #27ae60;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .export-buttons {
+                flex-direction: column;
+            }
+
+            .location-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .regional-factors {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🚀 Business Idea Validation & MVP Sounding Board</h1>
+            <p>AI-Powered Global Market Intelligence Platform</p>
+            <div class="premium-badge">🌍 Geographic Intelligence • Cultural Awareness • Customer Discovery</div>
+            <div class="location-indicator" id="locationIndicator">
+                📍 Detecting your location for contextual insights...
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Input Section -->
+            <div class="input-section">
+                <div class="api-config">
+                    <div class="form-group">
+                        <label for="apiKey">Claude API Key (Required for Enhanced Analysis)</label>
+                        <input type="password" id="apiKey" placeholder="sk-ant-..." />
+                        <small style="color: rgba(255,255,255,0.8);">Premium features require API access</small>
+                    </div>
+                </div>
+
+                <form id="ideaForm">
+                    <div class="form-group">
+                        <label for="ideaTitle">Business Idea Title *</label>
+                        <input type="text" id="ideaTitle" placeholder="e.g., AI-Powered Agricultural Equipment Sharing Platform" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ideaDescription">Detailed Description *</label>
+                        <textarea id="ideaDescription" placeholder="Describe your business idea, target market, value proposition, and how it works..." required></textarea>
+                    </div>
+
+                    <div class="location-grid">
+                        <div class="form-group">
+                            <label for="targetCountry">Target Country/Region</label>
+                            <select id="targetCountry">
+                                <option value="">Auto-detect from location</option>
+                                <option value="IN">India</option>
+                                <option value="US">United States</option>
+                                <option value="GB">United Kingdom</option>
+                                <option value="DE">Germany</option>
+                                <option value="FR">France</option>
+                                <option value="JP">Japan</option>
+                                <option value="AU">Australia</option>
+                                <option value="CA">Canada</option>
+                                <option value="BR">Brazil</option>
+                                <option value="CN">China</option>
+                                <option value="SG">Singapore</option>
+                                <option value="AE">UAE</option>
+                                <option value="ZA">South Africa</option>
+                                <option value="MX">Mexico</option>
+                                <option value="KE">Kenya</option>
+                                <option value="NG">Nigeria</option>
+                                <option value="ID">Indonesia</option>
+                                <option value="TH">Thailand</option>
+                                <option value="VN">Vietnam</option>
+                                <option value="PH">Philippines</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="targetCity">Target City/Market</label>
+                            <input type="text" id="targetCity" placeholder="e.g., Delhi, Mumbai, Rural Punjab" />
+                        </div>
+                    </div>
+                    <div id="locationDetected" class="location-detected" style="display: none;"></div>
+
+                    <div class="form-group">
+                        <label for="targetMarket">Target Customer Segment</label>
+                        <input type="text" id="targetMarket" placeholder="e.g., Small-scale farmers, Urban millennials, SME business owners" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="revenueModel">Revenue Model</label>
+                        <select id="revenueModel">
+                            <option value="">Select Revenue Model</option>
+                            <option value="subscription">Subscription</option>
+                            <option value="commission">Commission-based</option>
+                            <option value="freemium">Freemium</option>
+                            <option value="marketplace">Marketplace</option>
+                            <option value="saas">SaaS</option>
+                            <option value="advertising">Advertising</option>
+                            <option value="transaction">Transaction fees</option>
+                            <option value="licensing">Licensing</option>
+                            <option value="franchise">Franchise</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="investmentNeeded">Investment Needed (Local Currency)</label>
+                        <input type="number" id="investmentNeeded" placeholder="e.g., 5000000" />
+                        <small>Amount will be analyzed based on regional market standards</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="competitionLevel">Competition Level</label>
+                        <select id="competitionLevel">
+                            <option value="">Select Competition Level</option>
+                            <option value="low">Low - Blue Ocean/New Market</option>
+                            <option value="medium">Medium - Some Players</option>
+                            <option value="high">High - Crowded Market</option>
+                            <option value="monopoly">Monopoly/Regulated Market</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timeToMarket">Expected Time to Market (months)</label>
+                        <input type="number" id="timeToMarket" placeholder="e.g., 12" />
+                    </div>
+
+                    <button type="submit" class="btn" id="analyzeBtn">
+                        🔍 Generate Complete Market Intelligence
+                    </button>
+                    
+                    <button type="button" class="btn btn-secondary" onclick="detectLocation()">
+                        📍 Auto-Detect Location for Regional Insights
+                    </button>
+                </form>
+
+                <div class="loading" id="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Generating comprehensive market intelligence...</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p id="loadingStatus" style="font-size: 0.9rem; margin-top: 1rem;">Initializing analysis...</p>
+                </div>
+            </div>
+
+            <!-- Output Section -->
+            <div class="output-section">
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('overview')">Overview</button>
+                    <button class="tab" onclick="showTab('concerns')">Risk Analysis</button>
+                    <button class="tab" onclick="showTab('mvp')">MVP Plan</button>
+                    <button class="tab" onclick="showTab('discovery')">Customer Discovery</button>
+                    <button class="tab" onclick="showTab('cultural')">Regional Intel</button>
+                    <button class="tab" onclick="showTab('research')">Research Prompts</button>
+                    <button class="tab" onclick="showTab('recommendations')">Next Steps</button>
+                </div>
+
+                <div id="overview" class="tab-content active">
+                    <h3>📊 Business Idea Intelligence Overview</h3>
+                    <div id="overviewContent">
+                        <p>Fill in your business idea details and click "Generate Complete Market Intelligence" to get comprehensive insights tailored to your target market and cultural context.</p>
+                        <div class="market-intelligence">
+                            <h4>🎯 What You'll Get:</h4>
+                            <ul>
+                                <li><strong>Geographic Intelligence:</strong> Market-specific insights based on your target location</li>
+                                <li><strong>Cultural Awareness:</strong> Regional business practices and customer behavior patterns</li>
+                                <li><strong>Customer Discovery Kit:</strong> AI-generated interview questionnaires for validation</li>
+                                <li><strong>Research Prompts:</strong> Refined queries for deeper market research</li>
+                                <li><strong>Regulatory Insights:</strong> Location-specific compliance and legal considerations</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="concerns" class="tab-content">
+                    <h3>⚠️ Regional Risk Analysis & Market Challenges</h3>
+                    <div id="concernsContent">
+                        <p>Comprehensive risk analysis will appear here after submission.</p>
+                    </div>
+                </div>
+
+                <div id="mvp" class="tab-content">
+                    <h3>🛠️ Culturally-Adapted MVP Development Plan</h3>
+                    <div id="mvpContent">
+                        <p>Region-specific MVP roadmap will be generated based on your target market.</p>
+                    </div>
+                </div>
+
+                <div id="discovery" class="tab-content">
+                    <h3>🎯 Customer Discovery Interview Kit</h3>
+                    <div id="discoveryContent">
+                        <p>AI-generated interview questionnaires will appear here to help validate your problem-solution fit in your target market.</p>
+                    </div>
+                </div>
+
+                <div id="cultural" class="tab-content">
+                    <h3>🌍 Regional Intelligence & Cultural Insights</h3>
+                    <div id="culturalContent">
+                        <p>Geographic and cultural analysis will be generated based on your target market location.</p>
+                    </div>
+                </div>
+
+                <div id="research" class="tab-content">
+                    <h3>🔬 Advanced Research Prompts</h3>
+                    <div id="researchContent">
+                        <p>Refined research prompts for deeper market investigation will be generated here.</p>
+                    </div>
+                </div>
+
+                <div id="recommendations" class="tab-content">
+                    <h3>💡 Culturally-Informed Recommendations</h3>
+                    <div id="recommendationsContent">
+                        <p>Region-specific actionable recommendations will appear here.</p>
+                    </div>
+                </div>
+
+                <div class="export-buttons" style="display: none;" id="exportButtons">
+                    <button class="export-btn" onclick="exportComprehensiveReport()">📄 Full Report</button>
+                    <button class="export-btn" onclick="exportCustomerKit()">🎯 Discovery Kit</button>
+                    <button class="export-btn" onclick="exportResearchPrompts()">🔬 Research Prompts</button>
+                    <button class="export-btn" onclick="shareAnalysis()">🔗 Share Intelligence</button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-branding">Thought and Prepared by Vipul Anand</p>
+                <p>Powered by Anthropic's Claude AI with Geographic Intelligence</p>
+                <p>Empowering entrepreneurs with culturally-aware, location-specific business validation</p>
+                <p style="font-size: 0.9rem; opacity: 0.8;">© 2025 Global Business Innovation Hub. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        /*
+        Date Created: January 16, 2025
+        Tool: Claude Sonnet 4
+        Prompt 1: "Create a webpage as a sounding board for idea viability and critical thinking and helps in creating MVP and vetting the idea and list out concerns related to the idea using claude API AI integration. Footer must have thought and prepared by Vipul Anand using anthropic"
+        Prompt 2: "Enhanced with customer discovery interview questionnaire generator and geographic/cultural contextual awareness for premium market intelligence"
+        
+        Purpose: Advanced business idea validation with geographic intelligence and customer discovery
+        Features: 
+        - AI-generated customer discovery questionnaires
+        - Geographic and cultural contextual awareness
+        - Regional market intelligence
+        - Research prompt generation for further investigation
+        - Location-specific risk assessment
+        - Culturally-adapted MVP planning
+        */
+
+        // Global variables
+        let analysisResults = {};
+        let userLocation = {};
+        let countryData = {};
+
+        // Country and cultural data
+        const countryInfo = {
+            'IN': {
+                name: 'India',
+                currency: '₹',
+                business_culture: 'Relationship-based, hierarchical, family-oriented',
+                payment_preferences: 'Cash, UPI, Digital wallets',
+                regulatory_complexity: 'High',
+                startup_ecosystem: 'Rapidly growing, government support',
+                key_considerations: ['Diverse languages', 'Rural-urban divide', 'Price sensitivity', 'Trust building crucial']
+            },
+            'US': {
+                name: 'United States',
+                currency: '$',
+                business_culture: 'Direct, efficiency-focused, innovation-driven',
+                payment_preferences: 'Credit cards, digital payments, checks',
+                regulatory_complexity: 'Medium-High',
+                startup_ecosystem: 'Mature, extensive funding available',
+                key_considerations: ['Competitive market', 'High customer acquisition costs', 'Scale expectations', 'IP protection important']
+            },
+            'GB': {
+                name: 'United Kingdom',
+                currency: '£',
+                business_culture: 'Polite, formal, tradition-respecting',
+                payment_preferences: 'Cards, contactless, bank transfers',
+                regulatory_complexity: 'High',
+                startup_ecosystem: 'Strong, good government support',
+                key_considerations: ['Brexit implications', 'High operational costs', 'Quality expectations', 'Compliance heavy']
+            }
+            // Add more countries as needed
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            detectLocation();
+            setupFormValidation();
+        });
+
+        // Location detection
+        async function detectLocation() {
+            try {
+                // Try IP-based geolocation first
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+                
+                userLocation = {
+                    country: data.country_code,
+                    country_name: data.country_name,
+                    city: data.city,
+                    region: data.region
+                };
+
+                updateLocationIndicator();
+                
+                // Auto-select country if detected
+                if (userLocation.country) {
+                    document.getElementById('targetCountry').value = userLocation.country;
+                    document.getElementById('targetCity').value = userLocation.city || '';
+                }
+
+            } catch (error) {
+                console.log('Location detection failed, using browser geolocation...');
+                
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        position => {
+                            userLocation = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude
+                            };
+                            updateLocationIndicator();
+                        },
+                        error => {
+                            document.getElementById('locationIndicator').textContent = '📍 Location detection disabled - Regional insights will be limited';
+                        }
+                    );
+                }
+            }
+        }
+
+        function updateLocationIndicator() {
+            const indicator = document.getElementById('locationIndicator');
+            const detected = document.getElementById('locationDetected');
+            
+            if (userLocation.country_name) {
+                indicator.textContent = `📍 Detected: ${userLocation.city}, ${userLocation.country_name} - Regional insights enabled`;
+                detected.style.display = 'block';
+                detected.innerHTML = `✅ Location detected: <strong>${userLocation.city}, ${userLocation.country_name}</strong><br>Analysis will include region-specific insights and cultural considerations.`;
+            } else {
+                indicator.textContent = '📍 Manual location selection recommended for enhanced insights';
+            }
+        }
+
+        // Form validation
+        function setupFormValidation() {
+            const form = document.getElementById('ideaForm');
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const apiKey = document.getElementById('apiKey').value.trim();
+                if (!apiKey) {
+                    alert('Claude API key is required for advanced geographic and cultural analysis. Please enter your API key.');
+                    return;
+                }
+                
+                const formData = gatherFormData();
+                await generateComprehensiveAnalysis(formData);
+            });
+        }
+
+        // Gather form data
+        function gatherFormData() {
+            const targetCountry = document.getElementById('targetCountry').value || userLocation.country || 'IN';
+            
+            return {
+                title: document.getElementById('ideaTitle').value,
+                description: document.getElementById('ideaDescription').value,
+                targetCountry: targetCountry,
+                targetCity: document.getElementById('targetCity').value || userLocation.city || '',
+                targetMarket: document.getElementById('targetMarket').value,
+                revenueModel: document.getElementById('revenueModel').value,
+                investment: document.getElementById('investmentNeeded').value,
+                competition: document.getElementById('competitionLevel').value,
+                timeToMarket: document.getElementById('timeToMarket').value,
+                detectedLocation: userLocation
+            };
+        }
+
+        // Enhanced loading with status updates
+        function showEnhancedLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('analyzeBtn').disabled = true;
+            
+            const statusElement = document.getElementById('loadingStatus');
+            const progressFill = document.getElementById('progressFill');
+            let progress = 0;
+            
+            const statusMessages = [
+                'Analyzing business concept...',
+                'Researching target market...',
+                'Gathering regional insights...',
+                'Generating customer discovery questions...',
+                'Analyzing cultural factors...',
+                'Creating research prompts...',
+                'Finalizing recommendations...'
+            ];
+            
+            let messageIndex = 0;
+            
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 12;
+                if (progress > 90) progress = 90;
+                progressFill.style.width = progress + '%';
+                
+                if (messageIndex < statusMessages.length - 1 && Math.random() > 0.7) {
+                    messageIndex++;
+                    statusElement.textContent = statusMessages[messageIndex];
+                }
+            }, 500);
+
+            setTimeout(() => {
+                clearInterval(progressInterval);
+                progressFill.style.width = '100%';
+                statusElement.textContent = 'Completing analysis...';
+            }, 8000);
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('analyzeBtn').disabled = false;
+            document.getElementById('exportButtons').style.display = 'flex';
+        }
+
+        // Main comprehensive analysis function
+        async function generateComprehensiveAnalysis(formData) {
+            showEnhancedLoading();
+
+            try {
+                const apiKey = document.getElementById('apiKey').value;
+                await analyzeWithEnhancedClaudeAPI(formData, apiKey);
+            } catch (error) {
+                console.error('Analysis error:', error);
+                alert('Analysis failed. Please check your API key and try again.');
+            }
+
+            hideLoading();
+        }
+
+        // Enhanced Claude API integration
+        async function analyzeWithEnhancedClaudeAPI(formData, apiKey) {
+            const prompt = createComprehensiveAnalysisPrompt(formData);
+            
+            try {
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': apiKey,
+                        'anthropic-version': '2023-06-01'
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-3-sonnet-20240229',
+                        max_tokens: 8000,
+                        messages: [{
+                            role: 'user',
+                            content: prompt
+                        }]
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const analysis = parseEnhancedClaudeResponse(data.content[0].text, formData);
+                    displayEnhancedResults(analysis);
+                    analysisResults = analysis;
+                } else {
+                    throw new Error('API request failed');
+                }
+            } catch (error) {
+                console.error('Claude API error:', error);
+                throw error;
+            }
+        }
+
+        // Create comprehensive analysis prompt
+        function createComprehensiveAnalysisPrompt(formData) {
+            const countryInfo = getCountryInfo(formData.targetCountry);
+            
+            return `
+You are a global business intelligence expert with deep knowledge of regional markets, cultural nuances, and customer discovery methodologies. Please provide a comprehensive analysis of this business idea:
+
+BUSINESS IDEA DETAILS:
+- Title: ${formData.title}
+- Description: ${formData.description}
+- Target Country/Region: ${countryInfo.name || formData.targetCountry}
+- Target City/Market: ${formData.targetCity}
+- Target Customer Segment: ${formData.targetMarket}
+- Revenue Model: ${formData.revenueModel}
+- Investment Needed: ${formData.investment ? parseInt(formData.investment).toLocaleString() : 'Not specified'}
+- Competition Level: ${formData.competition}
+- Time to Market: ${formData.timeToMarket} months
+
+REGIONAL CONTEXT:
+- Currency: ${countryInfo.currency || 'Local currency'}
+- Business Culture: ${countryInfo.business_culture || 'Research needed'}
+- Payment Preferences: ${countryInfo.payment_preferences || 'Research needed'}
+- Regulatory Complexity: ${countryInfo.regulatory_complexity || 'Unknown'}
+- Startup Ecosystem: ${countryInfo.startup_ecosystem || 'Research needed'}
+
+Please provide analysis in the following structured format:
+
+1. VIABILITY SCORE (1-100) & JUSTIFICATION:
+[Provide numerical score with regional adjustment factors]
+
+2. KEY STRENGTHS:
+[List 5-7 strengths considering regional advantages]
+
+3. CRITICAL CONCERNS & REGIONAL RISKS:
+[List 8-10 concerns including cultural, regulatory, and market-specific risks]
+
+4. CULTURALLY-ADAPTED MVP PLAN:
+- Phase 1 (Core): [Features adapted for local market]
+- Phase 2 (Growth): [Regional expansion features]
+- Phase 3 (Scale): [Advanced localization]
+- Timeline: [Realistic timeline considering local factors]
+- Budget: [Cost estimates in local context]
+
+5. CUSTOMER DISCOVERY INTERVIEW QUESTIONNAIRE:
+Generate 15-20 interview questions in these categories:
+- Problem Validation (5 questions)
+- Solution Validation (5 questions)  
+- Market Behavior (3-4 questions)
+- Cultural/Regional Factors (3-4 questions)
+- Willingness to Pay (2-3 questions)
+
+Format each question as:
+**Category:** [Category Name]
+**Question:** [Interview question]
+**Purpose:** [What this validates]
+
+6. REGIONAL INTELLIGENCE:
+- Market Size Estimation for target region
+- Local Competition Analysis
+- Regulatory Requirements
+- Cultural Adaptation Needs
+- Payment/Technology Infrastructure
+- Customer Acquisition Strategies
+
+7. RESEARCH PROMPTS FOR FURTHER INVESTIGATION:
+Generate 5-8 refined prompts the user can use with AI tools for deeper research:
+- Market sizing prompt
+- Competitor analysis prompt
+- Regulatory research prompt
+- Customer persona development prompt
+- Financial modeling prompt
+
+8. CULTURALLY-INFORMED RECOMMENDATIONS:
+[8-10 actionable next steps considering regional factors]
+
+Be thorough, practical, and culturally sensitive in your analysis. Consider local business practices, customer behavior patterns, and regulatory environments.
+            `;
+        }
+
+        // Get country information
+        function getCountryInfo(countryCode) {
+            return countryInfo[countryCode] || {
+                name: 'Target Market',
+                currency: 'Local Currency',
+                business_culture: 'Research needed',
+                payment_preferences: 'Research needed',
+                regulatory_complexity: 'Unknown',
+                startup_ecosystem: 'Research needed'
+            };
+        }
+
+        // Parse enhanced Claude response
+        function parseEnhancedClaudeResponse(text, formData) {
+            const analysis = {
+                viabilityScore: 75,
+                strengths: [],
+                concerns: [],
+                mvpPlan: {},
+                customerQuestions: [],
+                regionalIntel: {},
+                researchPrompts: [],
+                recommendations: [],
+                formData: formData
+            };
+
+            // Extract viability score
+            const scoreMatch = text.match(/VIABILITY SCORE.*?(\d+)/i);
+            if (scoreMatch) {
+                analysis.viabilityScore = parseInt(scoreMatch[1]);
+            }
+
+            // Extract sections using regex
+            const strengthsMatch = text.match(/KEY STRENGTHS:(.*?)(?=CRITICAL CONCERNS|$)/s);
+            if (strengthsMatch) {
+                analysis.strengths = extractListItems(strengthsMatch[1]);
+            }
+
+            const concernsMatch = text.match(/CRITICAL CONCERNS.*?:(.*?)(?=CULTURALLY-ADAPTED MVP|$)/s);
+            if (concernsMatch) {
+                analysis.concerns = extractListItems(concernsMatch[1]);
+            }
+
+            const mvpMatch = text.match(/CULTURALLY-ADAPTED MVP PLAN:(.*?)(?=CUSTOMER DISCOVERY|$)/s);
+            if (mvpMatch) {
+                analysis.mvpPlan = parseMVPPlan(mvpMatch[1]);
+            }
+
+            const questionsMatch = text.match(/CUSTOMER DISCOVERY INTERVIEW QUESTIONNAIRE:(.*?)(?=REGIONAL INTELLIGENCE|$)/s);
+            if (questionsMatch) {
+                analysis.customerQuestions = parseCustomerQuestions(questionsMatch[1]);
+            }
+
+            const regionalMatch = text.match(/REGIONAL INTELLIGENCE:(.*?)(?=RESEARCH PROMPTS|$)/s);
+            if (regionalMatch) {
+                analysis.regionalIntel = parseRegionalIntel(regionalMatch[1]);
+            }
+
+            const promptsMatch = text.match(/RESEARCH PROMPTS.*?:(.*?)(?=CULTURALLY-INFORMED|$)/s);
+            if (promptsMatch) {
+                analysis.researchPrompts = parseResearchPrompts(promptsMatch[1]);
+            }
+
+            const recommendationsMatch = text.match(/CULTURALLY-INFORMED RECOMMENDATIONS:(.*?)$/s);
+            if (recommendationsMatch) {
+                analysis.recommendations = extractListItems(recommendationsMatch[1]);
+            }
+
+            return analysis;
+        }
+
+        // Helper functions for parsing
+        function extractListItems(text) {
+            return text.split(/[-•*]/)
+                .filter(item => item.trim())
+                .map(item => item.trim())
+                .filter(item => item.length > 10);
+        }
+
+        function parseMVPPlan(text) {
+            return {
+                phase1: extractAfterPattern(text, /Phase 1.*?:(.*?)(?=Phase 2|$)/s),
+                phase2: extractAfterPattern(text, /Phase 2.*?:(.*?)(?=Phase 3|$)/s),
+                phase3: extractAfterPattern(text, /Phase 3.*?:(.*?)(?=Timeline|$)/s),
+                timeline: extractAfterPattern(text, /Timeline.*?:(.*?)(?=Budget|$)/s),
+                budget: extractAfterPattern(text, /Budget.*?:(.*?)$/s)
+            };
+        }
+
+        function parseCustomerQuestions(text) {
+            const questions = [];
+            const questionBlocks = text.split(/\*\*Category:\*\*/);
+            
+            questionBlocks.forEach(block => {
+                if (block.trim()) {
+                    const categoryMatch = block.match(/^(.*?)\*\*Question:\*\*(.*?)\*\*Purpose:\*\*(.*?)(?=\*\*Category:|$)/s);
+                    if (categoryMatch) {
+                        questions.push({
+                            category: categoryMatch[1].trim(),
+                            question: categoryMatch[2].trim(),
+                            purpose: categoryMatch[3].trim()
+                        });
+                    }
+                }
+            });
+            
+            return questions;
+        }
+
+        function parseRegionalIntel(text) {
+            return {
+                marketSize: extractAfterPattern(text, /Market Size.*?:(.*?)(?=Local Competition|$)/s),
+                competition: extractAfterPattern(text, /Competition.*?:(.*?)(?=Regulatory|$)/s),
+                regulatory: extractAfterPattern(text, /Regulatory.*?:(.*?)(?=Cultural|$)/s),
+                cultural: extractAfterPattern(text, /Cultural.*?:(.*?)(?=Payment|$)/s),
+                infrastructure: extractAfterPattern(text, /Infrastructure.*?:(.*?)(?=Customer|$)/s),
+                acquisition: extractAfterPattern(text, /Acquisition.*?:(.*?)$/s)
+            };
+        }
+
+        function parseResearchPrompts(text) {
+            return extractListItems(text);
+        }
+
+        function extractAfterPattern(text, pattern) {
+            const match = text.match(pattern);
+            return match ? match[1].trim() : 'Analysis pending';
+        }
+
+        // Display enhanced results
+        function displayEnhancedResults(analysis) {
+            displayOverview(analysis);
+            displayConcerns(analysis);
+            displayMVP(analysis);
+            displayCustomerDiscovery(analysis);
+            displayRegionalIntel(analysis);
+            displayResearchPrompts(analysis);
+            displayRecommendations(analysis);
+        }
+
+        function displayOverview(analysis) {
+            const countryInfo = getCountryInfo(analysis.formData.targetCountry);
+            
+            const overviewHTML = `
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">${analysis.viabilityScore}%</div>
+                        <div class="metric-label">Regional Viability</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">${analysis.customerQuestions.length}</div>
+                        <div class="metric-label">Discovery Questions</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">${analysis.concerns.length}</div>
+                        <div class="metric-label">Regional Risks</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">${analysis.researchPrompts.length}</div>
+                        <div class="metric-label">Research Prompts</div>
+                    </div>
+                </div>
+                
+                <div class="market-intelligence">
+                    <h4>🌍 Market Context: ${countryInfo.name}</h4>
+                    <div class="regional-factors">
+                        <div class="factor-card">
+                            <strong>Currency & Pricing</strong><br>
+                            ${countryInfo.currency} - Consider local purchasing power
+                        </div>
+                        <div class="factor-card">
+                            <strong>Business Culture</strong><br>
+                            ${countryInfo.business_culture}
+                        </div>
+                        <div class="factor-card">
+                            <strong>Payment Preferences</strong><br>
+                            ${countryInfo.payment_preferences}
+                        </div>
+                        <div class="factor-card">
+                            <strong>Startup Ecosystem</strong><br>
+                            ${countryInfo.startup_ecosystem}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-section ${analysis.viabilityScore >= 70 ? '' : analysis.viabilityScore >= 50 ? 'warning' : 'critical'}">
+                    <h3>📈 Regional Viability Assessment</h3>
+                    <p><strong>Score: ${analysis.viabilityScore}%</strong></p>
+                    <p>${getRegionalViabilityMessage(analysis.viabilityScore, countryInfo.name)}</p>
+                </div>
+
+                <div class="result-section">
+                    <h3>💪 Market-Specific Strengths</h3>
+                    <ul>
+                        ${analysis.strengths.map(strength => `<li>${strength}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+            
+            document.getElementById('overviewContent').innerHTML = overviewHTML;
+        }
+
+        function displayConcerns(analysis) {
+            const concernsHTML = `
+                <div class="result-section critical">
+                    <h3>⚠️ Regional Risk Assessment</h3>
+                    <ul>
+                        ${analysis.concerns.map(concern => `<li>${concern}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="result-section warning">
+                    <h3>🛡️ Risk Mitigation Strategies</h3>
+                    <ul>
+                        <li>Conduct extensive local market research and cultural immersion</li>
+                        <li>Partner with local businesses for market entry</li>
+                        <li>Adapt pricing strategy to local purchasing power</li>
+                        <li>Ensure compliance with regional regulations from day one</li>
+                        <li>Build local team with cultural and market expertise</li>
+                        <li>Test assumptions through customer discovery before major investment</li>
+                    </ul>
+                </div>
+
+                <div class="cultural-insight">
+                    <h4>🎯 Cultural Considerations</h4>
+                    <p>Your target market may have specific cultural nuances that impact business success. Consider local customs, communication styles, decision-making processes, and trust-building methods when developing your go-to-market strategy.</p>
+                </div>
+            `;
+            
+            document.getElementById('concernsContent').innerHTML = concernsHTML;
+        }
+
+        function displayMVP(analysis) {
+            const mvpHTML = `
+                <div class="result-section">
+                    <h3>🚀 Culturally-Adapted MVP Roadmap</h3>
+                    <div class="accordion">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <strong>Phase 1: Core Features (Local Adaptation)</strong>
+                        </div>
+                        <div class="accordion-content">
+                            <p>${analysis.mvpPlan.phase1 || 'Core feature development with local market considerations'}</p>
+                        </div>
+                        
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <strong>Phase 2: Growth Features (Regional Expansion)</strong>
+                        </div>
+                        <div class="accordion-content">
+                            <p>${analysis.mvpPlan.phase2 || 'Enhanced features for regional market expansion'}</p>
+                        </div>
+                        
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <strong>Phase 3: Scale Features (Market Leadership)</strong>
+                        </div>
+                        <div class="accordion-content">
+                            <p>${analysis.mvpPlan.phase3 || 'Advanced features for market leadership and scale'}</p>
+                        </div>
+                    </div>
+                    
+                    <p><strong>Timeline:</strong> ${analysis.mvpPlan.timeline || '6-12 months with regional considerations'}</p>
+                    <p><strong>Budget:</strong> ${analysis.mvpPlan.budget || 'Estimated based on local development costs'}</p>
+                </div>
+                
+                <div class="result-section cultural">
+                    <h3>🎨 Localization Requirements</h3>
+                    <ul>
+                        <li>Language support for local languages and dialects</li>
+                        <li>Payment gateway integration for preferred local methods</li>
+                        <li>Cultural adaptation of user interface and user experience</li>
+                        <li>Local customer support and service delivery</li>
+                        <li>Compliance with regional data protection and privacy laws</li>
+                    </ul>
+                </div>
+            `;
+            
+            document.getElementById('mvpContent').innerHTML = mvpHTML;
+        }
+
+        function displayCustomerDiscovery(analysis) {
+            const discoveryHTML = `
+                <div class="result-section">
+                    <h3>🎯 AI-Generated Customer Discovery Kit</h3>
+                    <p><strong>Instructions:</strong> Use these questions to conduct 15-20 customer interviews to validate your problem-solution fit in your target market.</p>
+                </div>
+                
+                ${analysis.customerQuestions.map(q => `
+                    <div class="interview-question">
+                        <div class="question-category">${q.category}</div>
+                        <div class="question-text"><strong>Q:</strong> ${q.question}</div>
+                        <div class="question-purpose"><strong>Validates:</strong> ${q.purpose}</div>
+                    </div>
+                `).join('')}
+                
+                <div class="result-section">
+                    <h3>📋 Interview Best Practices</h3>
+                    <ul>
+                        <li><strong>Duration:</strong> 20-30 minutes per interview</li>
+                        <li><strong>Format:</strong> In-person or video call (avoid surveys for initial discovery)</li>
+                        <li><strong>Recording:</strong> Ask permission to record for analysis</li>
+                        <li><strong>Follow-up:</strong> Ask "Why?" and "Tell me more" to get deeper insights</li>
+                        <li><strong>Sample Size:</strong> Aim for 15-20 interviews before drawing conclusions</li>
+                        <li><strong>Documentation:</strong> Take detailed notes on quotes, emotions, and insights</li>
+                    </ul>
+                </div>
+
+                <div class="cultural-insight">
+                    <h4>🌍 Cultural Interview Considerations</h4>
+                    <p>Adapt your interview approach to local cultural norms. Consider factors like formality level, trust-building time, group vs individual preferences, and communication styles when conducting customer discovery in your target market.</p>
+                </div>
+            `;
+            
+            document.getElementById('discoveryContent').innerHTML = discoveryHTML;
+        }
+
+        function displayRegionalIntel(analysis) {
+            const regionalHTML = `
+                <div class="result-section cultural">
+                    <h3>🌍 Regional Market Intelligence</h3>
+                    <div class="regional-factors">
+                        <div class="factor-card">
+                            <strong>Market Size</strong>
+                            <p>${analysis.regionalIntel.marketSize || 'Requires local market research'}</p>
+                        </div>
+                        <div class="factor-card">
+                            <strong>Local Competition</strong>
+                            <p>${analysis.regionalIntel.competition || 'Competitive landscape analysis needed'}</p>
+                        </div>
+                        <div class="factor-card">
+                            <strong>Regulatory Environment</strong>
+                            <p>${analysis.regionalIntel.regulatory || 'Legal compliance research required'}</p>
+                        </div>
+                        <div class="factor-card">
+                            <strong>Cultural Adaptation</strong>
+                            <p>${analysis.regionalIntel.cultural || 'Cultural research and adaptation needed'}</p>
+                        </div>
+                        <div class="factor-card">
+                            <strong>Infrastructure</strong>
+                            <p>${analysis.regionalIntel.infrastructure || 'Technology and payment infrastructure assessment needed'}</p>
+                        </div>
+                        <div class="factor-card">
+                            <strong>Customer Acquisition</strong>
+                            <p>${analysis.regionalIntel.acquisition || 'Local customer acquisition strategy development needed'}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="market-intelligence">
+                    <h4>📊 Key Success Factors for Your Region</h4>
+                    <ul>
+                        <li><strong>Local Partnerships:</strong> Build relationships with established local businesses</li>
+                        <li><strong>Cultural Sensitivity:</strong> Understand and respect local business customs</li>
+                        <li><strong>Regulatory Compliance:</strong> Ensure full compliance with local laws and regulations</li>
+                        <li><strong>Payment Localization:</strong> Support preferred local payment methods</li>
+                        <li><strong>Language Support:</strong> Provide support in local languages</li>
+                        <li><strong>Trust Building:</strong> Establish credibility through local presence and testimonials</li>
+                    </ul>
+                </div>
+            `;
+            
+            document.getElementById('culturalContent').innerHTML = regionalHTML;
+        }
+
+        function displayResearchPrompts(analysis) {
+            const researchHTML = `
+                <div class="result-section">
+                    <h3>🔬 Refined Research Prompts for Deeper Investigation</h3>
+                    <p>Copy these prompts and use them with AI tools like ChatGPT, Claude, or Perplexity for detailed market research:</p>
+                </div>
+                
+                ${analysis.researchPrompts.map((prompt, index) => `
+                    <div class="research-prompt">
+                        <button class="copy-btn" onclick="copyToClipboard('prompt${index}')">Copy</button>
+                        <strong>Research Prompt ${index + 1}:</strong><br>
+                        <span id="prompt${index}">${prompt}</span>
+                    </div>
+                `).join('')}
+                
+                <div class="result-section">
+                    <h3>🛠️ Recommended Research Tools</h3>
+                    <div class="regional-factors">
+                        <div class="factor-card">
+                            <strong>Market Research</strong>
+                            <p>Google Trends, Statista, local market research firms</p>
+                        </div>
+                        <div class="factor-card">
+                            <strong>Competitor Analysis</strong>
+                            <p>SimilarWeb, SEMrush, local business directories</p>
+                        </div>
+                        <div class="factor-card">
+                            <strong>Regulatory Research</strong>
+                            <p>Government websites, legal databases, local consultants</p>
+                        </div>
+                        <div class="factor-card">
+                            <strong>Cultural Insights</strong>
+                            <p>Hofstede Insights, local cultural consultants, ethnographic studies</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('researchContent').innerHTML = researchHTML;
+        }
+
+        function displayRecommendations(analysis) {
+            const recommendationsHTML = `
+                ${analysis.recommendations.map((rec, index) => `
+                    <div class="recommendation-card">
+                        <h4>Step ${index + 1}</h4>
+                        <p>${rec}</p>
+                    </div>
+                `).join('')}
+                
+                <div class="result-section">
+                    <h3>📈 30-Day Cultural Intelligence Action Plan</h3>
+                    <ul>
+                        <li><strong>Week 1:</strong> Complete 10 customer discovery interviews using provided questions</li>
+                        <li><strong>Week 2:</strong> Research local competitors and regulatory requirements</li>
+                        <li><strong>Week 3:</strong> Connect with local business partners and cultural advisors</li>
+                        <li><strong>Week 4:</strong> Refine value proposition based on cultural insights and create localized MVP plan</li>
+                    </ul>
+                </div>
+
+                <div class="market-intelligence">
+                    <h4>🎯 Success Probability Factors</h4>
+                    <ul>
+                        <li><strong>Cultural Fit:</strong> How well does your solution align with local values and behaviors?</li>
+                        <li><strong>Economic Accessibility:</strong> Is your pricing appropriate for local purchasing power?</li>
+                        <li><strong>Infrastructure Readiness:</strong> Does the market have necessary technological infrastructure?</li>
+                        <li><strong>Regulatory Alignment:</strong> How complex is compliance with local regulations?</li>
+                        <li><strong>Market Timing:</strong> Are local conditions favorable for your type of solution?</li>
+                    </ul>
+                </div>
+            `;
+            
+            document.getElementById('recommendationsContent').innerHTML = recommendationsHTML;
+        }
+
+        // Helper functions
+        function getRegionalViabilityMessage(score, country) {
+            const location = country || 'your target market';
+            if (score >= 80) return `Excellent viability for ${location}! Strong cultural and market alignment with proper localization.`;
+            if (score >= 70) return `Good viability for ${location} with some regional adaptation needed.`;
+            if (score >= 50) return `Moderate viability for ${location}. Significant cultural and market research required.`;
+            return `Low viability for ${location}. Major cultural and market challenges need resolution.`;
+        }
+
+        function toggleAccordion(header) {
+            const content = header.nextElementSibling;
+            const isOpen = content.style.display === 'block';
+            
+            // Close all accordions
+            document.querySelectorAll('.accordion-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            
+            // Open clicked accordion if it was closed
+            if (!isOpen) {
+                content.style.display = 'block';
+            }
+        }
+
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = element.parentElement.querySelector('.copy-btn');
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = '#27ae60';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#3498db';
+                }, 2000);
+            });
+        }
+
+        // Tab navigation
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Export functions
+        function exportComprehensiveReport() {
+            const printWindow = window.open('', '_blank');
+            const printContent = `
+                <html>
+                <head>
+                    <title>Comprehensive Business Intelligence Report</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+                        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #3498db; padding-bottom: 20px; }
+                        .section { margin-bottom: 30px; padding: 15px; border-left: 3px solid #3498db; }
+                        .metric { display: inline-block; margin: 10px; padding: 10px; background: #f8f9fa; border-radius: 5px; }
+                        .question { margin: 10px 0; padding: 10px; background: #f8f9fa; border-left: 3px solid #27ae60; }
+                        .category { font-weight: bold; color: #3498db; }
+                        h2 { color: #2c3e50; border-bottom: 1px solid #3498db; padding-bottom: 5px; }
+                        h3 { color: #3498db; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>Business Intelligence Report</h1>
+                        <p><strong>Business Idea:</strong> ${analysisResults.formData?.title || 'Business Analysis'}</p>
+                        <p><strong>Target Market:</strong> ${analysisResults.formData?.targetCity}, ${getCountryInfo(analysisResults.formData?.targetCountry).name}</p>
+                        <p><strong>Generated:</strong> ${new Date().toLocaleDateString()}</p>
+                    </div>
+                    ${document.getElementById('overviewContent').innerHTML}
+                    ${document.getElementById('concernsContent').innerHTML}
+                    ${document.getElementById('mvpContent').innerHTML}
+                    ${document.getElementById('discoveryContent').innerHTML}
+                    ${document.getElementById('culturalContent').innerHTML}
+                    ${document.getElementById('recommendationsContent').innerHTML}
+                </body>
+                </html>
+            `;
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function exportCustomerKit() {
+            const kitData = {
+                businessIdea: analysisResults.formData?.title,
+                targetMarket: `${analysisResults.formData?.targetCity}, ${getCountryInfo(analysisResults.formData?.targetCountry).name}`,
+                questions: analysisResults.customerQuestions,
+                instructions: "Customer Discovery Interview Kit - Conduct 15-20 interviews to validate problem-solution fit",
+                generatedDate: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(kitData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'customer-discovery-kit.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function exportResearchPrompts() {
+            const promptsData = {
+                businessIdea: analysisResults.formData?.title,
+                targetMarket: `${analysisResults.formData?.targetCity}, ${getCountryInfo(analysisResults.formData?.targetCountry).name}`,
+                researchPrompts: analysisResults.researchPrompts,
+                instructions: "Use these prompts with AI tools for deeper market research",
+                generatedDate: new Date().toISOString()
+            };
+
+            const promptsText = analysisResults.researchPrompts?.map((prompt, index) => 
+                `Research Prompt ${index + 1}:\n${prompt}\n\n`
+            ).join('');
+
+            const blob = new Blob([promptsText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'research-prompts.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function shareAnalysis() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Business Intelligence Analysis',
+                    text: `Comprehensive analysis for: ${analysisResults.formData?.title}\nViability Score: ${analysisResults.viabilityScore}%\nTarget Market: ${analysisResults.formData?.targetCity}, ${getCountryInfo(analysisResults.formData?.targetCountry).name}`,
+                    url: window.location.href
+                });
+            } else {
+                const shareText = `Business Intelligence Analysis\n\nIdea: ${analysisResults.formData?.title}\nViability Score: ${analysisResults.viabilityScore}%\nTarget Market: ${analysisResults.formData?.targetCity}, ${getCountryInfo(analysisResults.formData?.targetCountry).name}\n\nGenerated at: ${window.location.href}`;
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('Analysis summary copied to clipboard!');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
