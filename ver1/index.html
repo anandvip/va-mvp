@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Idea Validation & MVP Sounding Board</title>
+    <style>
+        /*
+        Date Created: January 16, 2025
+        Tool: Claude Sonnet 4
+        Prompt 1: "Create a webpage as a sounding board for idea viability and critical thinking and helps in creating MVP and vetting the idea and list out concerns related to the idea using claude API AI integration. Footer must have thought and prepared by Vipul Anand using anthropic"
+        */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="20" cy="20" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="30" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-content {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .output-section {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #3498db;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #27ae60;
+            background: #f8f9fa;
+        }
+
+        .result-section.warning {
+            border-left-color: #f39c12;
+            background: #fdf6e3;
+        }
+
+        .result-section.critical {
+            border-left-color: #e74c3c;
+            background: #fdedec;
+        }
+
+        .result-section h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .result-section ul {
+            margin-left: 1.5rem;
+        }
+
+        .result-section li {
+            margin-bottom: 0.5rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            border-top: 3px solid #3498db;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .tab {
+            padding: 0.8rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            color: #7f8c8d;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .api-config {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .api-config input {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+        }
+
+        .api-config input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer-content p {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-branding {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #3498db;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .export-buttons {
+                flex-direction: column;
+            }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #ecf0f1;
+            border-radius: 2px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            border-radius: 2px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .recommendation-card {
+            background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .recommendation-card h4 {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🚀 Business Idea Validation & MVP Sounding Board</h1>
+            <p>AI-Powered Critical Analysis for Startup Success</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Input Section -->
+            <div class="input-section">
+                <div class="api-config">
+                    <div class="form-group">
+                        <label for="apiKey">Claude API Key (Optional - for enhanced analysis)</label>
+                        <input type="password" id="apiKey" placeholder="sk-ant-..." />
+                    </div>
+                </div>
+
+                <form id="ideaForm">
+                    <div class="form-group">
+                        <label for="ideaTitle">Business Idea Title *</label>
+                        <input type="text" id="ideaTitle" placeholder="e.g., AI-Powered Agricultural Equipment Sharing Platform" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ideaDescription">Detailed Description *</label>
+                        <textarea id="ideaDescription" placeholder="Describe your business idea, target market, value proposition, and how it works..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="targetMarket">Target Market</label>
+                        <input type="text" id="targetMarket" placeholder="e.g., Small-scale farmers in rural India" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="revenueModel">Revenue Model</label>
+                        <select id="revenueModel">
+                            <option value="">Select Revenue Model</option>
+                            <option value="subscription">Subscription</option>
+                            <option value="commission">Commission-based</option>
+                            <option value="freemium">Freemium</option>
+                            <option value="marketplace">Marketplace</option>
+                            <option value="saas">SaaS</option>
+                            <option value="advertising">Advertising</option>
+                            <option value="transaction">Transaction fees</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="investmentNeeded">Investment Needed (₹)</label>
+                        <input type="number" id="investmentNeeded" placeholder="e.g., 5000000" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="competitionLevel">Competition Level</label>
+                        <select id="competitionLevel">
+                            <option value="">Select Competition Level</option>
+                            <option value="low">Low - Blue Ocean</option>
+                            <option value="medium">Medium - Some Players</option>
+                            <option value="high">High - Crowded Market</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timeToMarket">Expected Time to Market (months)</label>
+                        <input type="number" id="timeToMarket" placeholder="e.g., 12" />
+                    </div>
+
+                    <button type="submit" class="btn" id="analyzeBtn">
+                        🔍 Analyze Business Idea
+                    </button>
+                </form>
+
+                <div class="loading" id="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Analyzing your business idea...</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Output Section -->
+            <div class="output-section">
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('overview')">Overview</button>
+                    <button class="tab" onclick="showTab('concerns')">Concerns</button>
+                    <button class="tab" onclick="showTab('mvp')">MVP Plan</button>
+                    <button class="tab" onclick="showTab('recommendations')">Next Steps</button>
+                </div>
+
+                <div id="overview" class="tab-content active">
+                    <h3>📊 Business Idea Overview</h3>
+                    <div id="overviewContent">
+                        <p>Fill in your business idea details and click "Analyze Business Idea" to get comprehensive insights.</p>
+                    </div>
+                </div>
+
+                <div id="concerns" class="tab-content">
+                    <h3>⚠️ Critical Concerns & Risk Analysis</h3>
+                    <div id="concernsContent">
+                        <p>Analysis will appear here after submission.</p>
+                    </div>
+                </div>
+
+                <div id="mvp" class="tab-content">
+                    <h3>🛠️ MVP Development Plan</h3>
+                    <div id="mvpContent">
+                        <p>MVP roadmap will be generated based on your idea.</p>
+                    </div>
+                </div>
+
+                <div id="recommendations" class="tab-content">
+                    <h3>💡 Recommendations & Next Steps</h3>
+                    <div id="recommendationsContent">
+                        <p>Actionable recommendations will appear here.</p>
+                    </div>
+                </div>
+
+                <div class="export-buttons" style="display: none;" id="exportButtons">
+                    <button class="export-btn" onclick="exportToPDF()">📄 Export PDF</button>
+                    <button class="export-btn" onclick="exportToJSON()">💾 Export Data</button>
+                    <button class="export-btn" onclick="shareAnalysis()">🔗 Share Analysis</button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-branding">Thought and Prepared by Vipul Anand</p>
+                <p>Powered by Anthropic's Claude AI</p>
+                <p>Empowering entrepreneurs with AI-driven business validation</p>
+                <p style="font-size: 0.9rem; opacity: 0.8;">© 2025 Business Innovation Hub. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        /*
+        Date Created: January 16, 2025
+        Tool: Claude Sonnet 4
+        Prompt 1: "Create a webpage as a sounding board for idea viability and critical thinking and helps in creating MVP and vetting the idea and list out concerns related to the idea using claude API AI integration. Footer must have thought and prepared by Vipul Anand using anthropic"
+        
+        Purpose: Business idea validation and MVP planning tool with AI integration
+        Features: 
+        - Comprehensive business idea analysis
+        - Risk assessment and concern identification
+        - MVP development roadmap
+        - Claude AI integration for enhanced insights
+        - Export functionality for reports
+        */
+
+        // Global variables
+        let analysisResults = {};
+        
+        // Form submission handler
+        document.getElementById('ideaForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                title: document.getElementById('ideaTitle').value,
+                description: document.getElementById('ideaDescription').value,
+                targetMarket: document.getElementById('targetMarket').value,
+                revenueModel: document.getElementById('revenueModel').value,
+                investment: document.getElementById('investmentNeeded').value,
+                competition: document.getElementById('competitionLevel').value,
+                timeToMarket: document.getElementById('timeToMarket').value
+            };
+
+            await analyzeBusinessIdea(formData);
+        });
+
+        // Show loading with progress simulation
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('analyzeBtn').disabled = true;
+            
+            const progressFill = document.getElementById('progressFill');
+            let progress = 0;
+            
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 90) progress = 90;
+                progressFill.style.width = progress + '%';
+            }, 200);
+
+            setTimeout(() => {
+                clearInterval(progressInterval);
+                progressFill.style.width = '100%';
+            }, 3000);
+        }
+
+        // Hide loading
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('analyzeBtn').disabled = false;
+            document.getElementById('exportButtons').style.display = 'flex';
+        }
+
+        // Main analysis function
+        async function analyzeBusinessIdea(formData) {
+            showLoading();
+
+            try {
+                // Try Claude API first if key is provided
+                const apiKey = document.getElementById('apiKey').value;
+                
+                if (apiKey) {
+                    await analyzeWithClaudeAPI(formData, apiKey);
+                } else {
+                    // Fallback to local analysis
+                    analyzeLocally(formData);
+                }
+            } catch (error) {
+                console.error('Analysis error:', error);
+                // Fallback to local analysis
+                analyzeLocally(formData);
+            }
+
+            hideLoading();
+        }
+
+        // Claude API integration
+        async function analyzeWithClaudeAPI(formData, apiKey) {
+            const prompt = createAnalysisPrompt(formData);
+            
+            try {
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': apiKey,
+                        'anthropic-version': '2023-06-01'
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-3-sonnet-20240229',
+                        max_tokens: 4000,
+                        messages: [{
+                            role: 'user',
+                            content: prompt
+                        }]
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const analysis = parseClaudeResponse(data.content[0].text);
+                    displayResults(analysis);
+                    analysisResults = analysis;
+                } else {
+                    throw new Error('API request failed');
+                }
+            } catch (error) {
+                console.error('Claude API error:', error);
+                analyzeLocally(formData);
+            }
+        }
+
+        // Create analysis prompt for Claude
+        function createAnalysisPrompt(formData) {
+            return `
+            Please analyze this business idea comprehensively:
+
+            Title: ${formData.title}
+            Description: ${formData.description}
+            Target Market: ${formData.targetMarket}
+            Revenue Model: ${formData.revenueModel}
+            Investment Needed: ₹${formData.investment ? parseInt(formData.investment).toLocaleString() : 'Not specified'}
+            Competition Level: ${formData.competition}
+            Time to Market: ${formData.timeToMarket} months
+
+            Please provide analysis in the following structure:
+
+            1. VIABILITY SCORE (1-100):
+            [Provide a numerical score and brief justification]
+
+            2. KEY STRENGTHS:
+            - [List 3-5 main strengths]
+
+            3. CRITICAL CONCERNS:
+            - [List 5-8 major risks and concerns]
+
+            4. MVP DEVELOPMENT PLAN:
+            - Phase 1: [Core features for initial MVP]
+            - Phase 2: [Additional features]
+            - Phase 3: [Scale features]
+            - Timeline: [Realistic timeline]
+            - Budget: [Estimated costs]
+
+            5. MARKET ANALYSIS:
+            - Market Size: [Estimation]
+            - Competition Analysis: [Key competitors and differentiation]
+            - Customer Validation: [How to validate demand]
+
+            6. RECOMMENDATIONS:
+            - [3-5 immediate next steps]
+            - [Risk mitigation strategies]
+            - [Growth strategies]
+
+            Please be thorough, critical, and practical in your analysis.
+            `;
+        }
+
+        // Parse Claude API response
+        function parseClaudeResponse(text) {
+            const analysis = {
+                viabilityScore: 75,
+                strengths: [],
+                concerns: [],
+                mvpPlan: {},
+                marketAnalysis: {},
+                recommendations: []
+            };
+
+            // Extract viability score
+            const scoreMatch = text.match(/VIABILITY SCORE.*?(\d+)/i);
+            if (scoreMatch) {
+                analysis.viabilityScore = parseInt(scoreMatch[1]);
+            }
+
+            // Extract sections using regex
+            const strengthsMatch = text.match(/KEY STRENGTHS:(.*?)(?=CRITICAL CONCERNS:|$)/s);
+            if (strengthsMatch) {
+                analysis.strengths = strengthsMatch[1].split(/[-•]/).filter(s => s.trim()).map(s => s.trim());
+            }
+
+            const concernsMatch = text.match(/CRITICAL CONCERNS:(.*?)(?=MVP DEVELOPMENT PLAN:|$)/s);
+            if (concernsMatch) {
+                analysis.concerns = concernsMatch[1].split(/[-•]/).filter(s => s.trim()).map(s => s.trim());
+            }
+
+            const mvpMatch = text.match(/MVP DEVELOPMENT PLAN:(.*?)(?=MARKET ANALYSIS:|$)/s);
+            if (mvpMatch) {
+                analysis.mvpPlan.description = mvpMatch[1].trim();
+            }
+
+            const marketMatch = text.match(/MARKET ANALYSIS:(.*?)(?=RECOMMENDATIONS:|$)/s);
+            if (marketMatch) {
+                analysis.marketAnalysis.description = marketMatch[1].trim();
+            }
+
+            const recommendationsMatch = text.match(/RECOMMENDATIONS:(.*?)$/s);
+            if (recommendationsMatch) {
+                analysis.recommendations = recommendationsMatch[1].split(/[-•]/).filter(s => s.trim()).map(s => s.trim());
+            }
+
+            return analysis;
+        }
+
+        // Local analysis fallback
+        function analyzeLocally(formData) {
+            const analysis = {
+                viabilityScore: calculateViabilityScore(formData),
+                strengths: generateStrengths(formData),
+                concerns: generateConcerns(formData),
+                mvpPlan: generateMVPPlan(formData),
+                marketAnalysis: generateMarketAnalysis(formData),
+                recommendations: generateRecommendations(formData)
+            };
+
+            displayResults(analysis);
+            analysisResults = analysis;
+        }
+
+        // Calculate viability score
+        function calculateViabilityScore(formData) {
+            let score = 50; // Base score
+
+            // Market factors
+            if (formData.targetMarket) score += 10;
+            if (formData.revenueModel) score += 10;
+            
+            // Competition factors
+            if (formData.competition === 'low') score += 15;
+            else if (formData.competition === 'medium') score += 10;
+            else if (formData.competition === 'high') score += 5;
+
+            // Investment factors
+            const investment = parseInt(formData.investment) || 0;
+            if (investment > 0 && investment < 1000000) score += 10;
+            else if (investment >= 1000000 && investment < 10000000) score += 5;
+
+            // Time to market
+            const timeToMarket = parseInt(formData.timeToMarket) || 0;
+            if (timeToMarket > 0 && timeToMarket <= 6) score += 10;
+            else if (timeToMarket <= 12) score += 5;
+
+            return Math.min(Math.max(score, 20), 95);
+        }
+
+        // Generate strengths
+        function generateStrengths(formData) {
+            const strengths = [];
+            
+            if (formData.description.length > 100) {
+                strengths.push("Well-defined business concept with clear value proposition");
+            }
+            
+            if (formData.targetMarket) {
+                strengths.push("Specific target market identified");
+            }
+            
+            if (formData.revenueModel) {
+                strengths.push(`Clear revenue model: ${formData.revenueModel}`);
+            }
+            
+            if (formData.competition === 'low') {
+                strengths.push("Low competition provides market opportunity");
+            }
+            
+            const investment = parseInt(formData.investment) || 0;
+            if (investment > 0 && investment < 5000000) {
+                strengths.push("Reasonable investment requirement for startup");
+            }
+
+            strengths.push("Demonstrates entrepreneurial initiative and planning");
+            
+            return strengths;
+        }
+
+        // Generate concerns
+        function generateConcerns(formData) {
+            const concerns = [];
+            
+            if (!formData.targetMarket) {
+                concerns.push("Target market not clearly defined - customer validation needed");
+            }
+            
+            if (!formData.revenueModel) {
+                concerns.push("Revenue model unclear - monetization strategy needs development");
+            }
+            
+            if (formData.competition === 'high') {
+                concerns.push("High competition market - differentiation strategy critical");
+            }
+            
+            const investment = parseInt(formData.investment) || 0;
+            if (investment === 0) {
+                concerns.push("Investment requirement not specified - financial planning needed");
+            } else if (investment > 10000000) {
+                concerns.push("High investment requirement - fundraising challenges expected");
+            }
+            
+            const timeToMarket = parseInt(formData.timeToMarket) || 0;
+            if (timeToMarket === 0) {
+                concerns.push("Timeline not specified - project planning required");
+            } else if (timeToMarket > 18) {
+                concerns.push("Long time to market - risk of market changes and competition");
+            }
+            
+            concerns.push("Customer acquisition cost and retention strategy undefined");
+            concerns.push("Scalability challenges not addressed");
+            concerns.push("Regulatory and compliance requirements need investigation");
+            concerns.push("Team and operational capabilities need assessment");
+            
+            return concerns;
+        }
+
+        // Generate MVP plan
+        function generateMVPPlan(formData) {
+            return {
+                phase1: "Core feature development and basic user interface",
+                phase2: "User feedback integration and feature enhancement",
+                phase3: "Scale preparation and advanced features",
+                timeline: `${Math.max(parseInt(formData.timeToMarket) || 6, 3)} months total development`,
+                budget: `₹${Math.max(parseInt(formData.investment) * 0.3 || 500000, 200000).toLocaleString()} for MVP`
+            };
+        }
+
+        // Generate market analysis
+        function generateMarketAnalysis(formData) {
+            return {
+                size: "Market size analysis required based on target segment",
+                competition: `${formData.competition || 'Unknown'} competition level indicates ${formData.competition === 'low' ? 'opportunity' : 'challenges'}`,
+                validation: "Customer interviews and prototype testing recommended"
+            };
+        }
+
+        // Generate recommendations
+        function generateRecommendations(formData) {
+            const recommendations = [
+                "Conduct customer discovery interviews to validate problem-solution fit",
+                "Develop detailed financial projections and unit economics model",
+                "Create prototype or wireframes for user testing",
+                "Research regulatory requirements and compliance needs"
+            ];
+            
+            if (!formData.targetMarket) {
+                recommendations.push("Define specific customer personas and market segments");
+            }
+            
+            if (!formData.revenueModel) {
+                recommendations.push("Develop and test revenue model with potential customers");
+            }
+            
+            if (formData.competition === 'high') {
+                recommendations.push("Analyze competitors and develop differentiation strategy");
+            }
+            
+            recommendations.push("Build minimum viable team with complementary skills");
+            recommendations.push("Establish key performance indicators and success metrics");
+            
+            return recommendations;
+        }
+
+        // Display results
+        function displayResults(analysis) {
+            // Overview tab
+            const overviewHTML = `
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">${analysis.viabilityScore}%</div>
+                        <div class="metric-label">Viability Score</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">${analysis.strengths.length}</div>
+                        <div class="metric-label">Key Strengths</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">${analysis.concerns.length}</div>
+                        <div class="metric-label">Concerns Identified</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">${analysis.recommendations.length}</div>
+                        <div class="metric-label">Recommendations</div>
+                    </div>
+                </div>
+                
+                <div class="result-section ${analysis.viabilityScore >= 70 ? '' : analysis.viabilityScore >= 50 ? 'warning' : 'critical'}">
+                    <h3>📈 Viability Assessment</h3>
+                    <p><strong>Score: ${analysis.viabilityScore}%</strong></p>
+                    <p>${getViabilityMessage(analysis.viabilityScore)}</p>
+                </div>
+
+                <div class="result-section">
+                    <h3>💪 Key Strengths</h3>
+                    <ul>
+                        ${analysis.strengths.map(strength => `<li>${strength}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+            
+            // Concerns tab
+            const concernsHTML = `
+                <div class="result-section critical">
+                    <h3>⚠️ Critical Risk Areas</h3>
+                    <ul>
+                        ${analysis.concerns.map(concern => `<li>${concern}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="result-section warning">
+                    <h3>🔍 Risk Mitigation Strategies</h3>
+                    <ul>
+                        <li>Conduct thorough market research and customer validation</li>
+                        <li>Develop detailed financial models with sensitivity analysis</li>
+                        <li>Create contingency plans for major identified risks</li>
+                        <li>Build strong advisory board with industry expertise</li>
+                        <li>Establish partnerships to reduce operational risks</li>
+                    </ul>
+                </div>
+            `;
+            
+            // MVP tab
+            const mvpHTML = `
+                <div class="result-section">
+                    <h3>🚀 MVP Development Roadmap</h3>
+                    <p><strong>Phase 1 (Months 1-2):</strong> ${analysis.mvpPlan.phase1}</p>
+                    <p><strong>Phase 2 (Months 3-4):</strong> ${analysis.mvpPlan.phase2}</p>
+                    <p><strong>Phase 3 (Months 5-6):</strong> ${analysis.mvpPlan.phase3}</p>
+                    <p><strong>Timeline:</strong> ${analysis.mvpPlan.timeline}</p>
+                    <p><strong>Estimated Budget:</strong> ${analysis.mvpPlan.budget}</p>
+                </div>
+                
+                <div class="result-section">
+                    <h3>📋 MVP Success Criteria</h3>
+                    <ul>
+                        <li>User engagement metrics: Daily/Monthly active users</li>
+                        <li>Customer feedback scores and satisfaction ratings</li>
+                        <li>Conversion rates and user retention</li>
+                        <li>Revenue generation (if applicable in MVP)</li>
+                        <li>Technical performance and reliability metrics</li>
+                    </ul>
+                </div>
+            `;
+            
+            // Recommendations tab
+            const recommendationsHTML = `
+                ${analysis.recommendations.map((rec, index) => `
+                    <div class="recommendation-card">
+                        <h4>Step ${index + 1}</h4>
+                        <p>${rec}</p>
+                    </div>
+                `).join('')}
+                
+                <div class="result-section">
+                    <h3>📊 Next 30 Days Action Plan</h3>
+                    <ul>
+                        <li>Week 1: Conduct 10 customer discovery interviews</li>
+                        <li>Week 2: Analyze feedback and refine value proposition</li>
+                        <li>Week 3: Create wireframes/mockups for core features</li>
+                        <li>Week 4: Develop financial projections and funding strategy</li>
+                    </ul>
+                </div>
+            `;
+
+            // Update content
+            document.getElementById('overviewContent').innerHTML = overviewHTML;
+            document.getElementById('concernsContent').innerHTML = concernsHTML;
+            document.getElementById('mvpContent').innerHTML = mvpHTML;
+            document.getElementById('recommendationsContent').innerHTML = recommendationsHTML;
+        }
+
+        // Get viability message
+        function getViabilityMessage(score) {
+            if (score >= 80) return "Excellent viability! Strong potential for success with proper execution.";
+            if (score >= 70) return "Good viability with some areas for improvement. Proceed with caution.";
+            if (score >= 50) return "Moderate viability. Significant risks need to be addressed before proceeding.";
+            return "Low viability. Major concerns require resolution before investment.";
+        }
+
+        // Tab navigation
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Export functions
+        function exportToPDF() {
+            // Simple PDF export using browser print
+            const printWindow = window.open('', '_blank');
+            const printContent = `
+                <html>
+                <head>
+                    <title>Business Idea Analysis Report</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        .header { text-align: center; margin-bottom: 30px; }
+                        .section { margin-bottom: 20px; padding: 10px; border-left: 3px solid #3498db; }
+                        .metric { display: inline-block; margin: 10px; padding: 10px; background: #f8f9fa; border-radius: 5px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>Business Idea Analysis Report</h1>
+                        <p>Generated on ${new Date().toLocaleDateString()}</p>
+                    </div>
+                    ${document.getElementById('overviewContent').innerHTML}
+                    ${document.getElementById('concernsContent').innerHTML}
+                    ${document.getElementById('mvpContent').innerHTML}
+                    ${document.getElementById('recommendationsContent').innerHTML}
+                </body>
+                </html>
+            `;
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function exportToJSON() {
+            const data = {
+                timestamp: new Date().toISOString(),
+                formData: {
+                    title: document.getElementById('ideaTitle').value,
+                    description: document.getElementById('ideaDescription').value,
+                    targetMarket: document.getElementById('targetMarket').value,
+                    revenueModel: document.getElementById('revenueModel').value,
+                    investment: document.getElementById('investmentNeeded').value,
+                    competition: document.getElementById('competitionLevel').value,
+                    timeToMarket: document.getElementById('timeToMarket').value
+                },
+                analysis: analysisResults
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'business-idea-analysis.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function shareAnalysis() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Business Idea Analysis',
+                    text: `Check out my business idea analysis: ${document.getElementById('ideaTitle').value}`,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback: copy to clipboard
+                const shareText = `Business Idea: ${document.getElementById('ideaTitle').value}\nViability Score: ${analysisResults.viabilityScore}%\nAnalyzed at: ${window.location.href}`;
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('Analysis summary copied to clipboard!');
+                });
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Business Idea Validation Tool initialized');
+        });
+    </script>
+</body>
+</html>
